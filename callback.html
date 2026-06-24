@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PodClip — TikTok Connected</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+           background: #0f0f14; color: #f1f0ff; line-height: 1.6;
+           min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .card { max-width: 560px; padding: 40px 32px; text-align: center; }
+    .logo { font-size: 26px; font-weight: 800; margin-bottom: 8px; }
+    .logo span { color: #ffc72c; }
+    h1 { font-size: 20px; margin: 16px 0 8px; }
+    p { color: #8b8aad; font-size: 15px; margin-bottom: 24px; }
+    .code-box { background: #1c1c28; border: 1px solid #2a2a3d; border-radius: 12px;
+                padding: 18px; font-family: monospace; font-size: 13px; word-break: break-all;
+                color: #ffc72c; margin-bottom: 16px; }
+    button { background: #6e0e1e; color: #fff; border: none; padding: 12px 28px;
+             border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; }
+    button:hover { opacity: .9; }
+    .err { color: #ff6b6b; }
+    .ok { color: #22c55e; font-size: 14px; margin-top: 12px; min-height: 20px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">Pod<span>Clip</span></div>
+    <div id="content">
+      <h1>Connecting…</h1>
+    </div>
+  </div>
+
+  <script>
+    function getParam(name) {
+      return new URLSearchParams(window.location.search).get(name);
+    }
+    var code = getParam("code");
+    var error = getParam("error");
+    var content = document.getElementById("content");
+
+    if (error) {
+      content.innerHTML =
+        '<h1 class="err">Authorization failed</h1>' +
+        '<p>' + (getParam("error_description") || error) + '</p>' +
+        '<p>Close this tab and try connecting again in PodClip.</p>';
+    } else if (code) {
+      content.innerHTML =
+        '<h1>✅ Almost done!</h1>' +
+        '<p>Copy this code and paste it back into PodClip to finish connecting your TikTok account.</p>' +
+        '<div class="code-box" id="code">' + code + '</div>' +
+        '<button onclick="copyCode()">Copy code</button>' +
+        '<div class="ok" id="okmsg"></div>';
+    } else {
+      content.innerHTML =
+        '<h1 class="err">No code found</h1>' +
+        '<p>This page should be opened by TikTok after you authorize. Close it and try again from PodClip.</p>';
+    }
+
+    function copyCode() {
+      var text = document.getElementById("code").innerText;
+      navigator.clipboard.writeText(text).then(function () {
+        document.getElementById("okmsg").innerText = "Copied! Now paste it into PodClip.";
+      });
+    }
+  </script>
+</body>
+</html>
